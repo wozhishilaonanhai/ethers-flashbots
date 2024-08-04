@@ -203,7 +203,7 @@ impl<M: Middleware, S: Signer> FlashbotsMiddleware<M, S> {
             return Err(FlashbotsMiddlewareError::MissingParameters);
         }
 
-        let response: Option<SendBundleResponse> = self
+        let response: Option<BundleHash> = self
             .relay
             .request("eth_sendBundle", [bundle])
             .await
@@ -211,7 +211,7 @@ impl<M: Middleware, S: Signer> FlashbotsMiddleware<M, S> {
 
         match response {
             Some(r) => Ok(PendingBundle::new(
-                r.bundle_hash,
+                Some(r),
                 bundle.block().unwrap(),
                 bundle.transaction_hashes(),
                 self.provider(),
