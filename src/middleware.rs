@@ -459,9 +459,9 @@ impl<M: Middleware, S: Signer> BroadcasterMiddleware<M, S> {
             .map(|relay| async move {
                 let response = relay.request("eth_sendBundle", [bundle]).await;
                 response
-                    .map(|response: Option<SendBundleResponse>| match response {
+                    .map(|response: Option<BundleHash>| match response {
                         Some(r) => PendingBundle::new(
-                            r.bundle_hash,
+                            Some(r),
                             bundle.block().unwrap(),
                             bundle.transaction_hashes(),
                             self.provider(),
